@@ -5,7 +5,8 @@ import retrofit2.http.GET;
 
 public interface CallableInterface {
 
-    @GET("/v2/top-headlines?country=de&category=business&apiKey=d03d6de4436b43598fa814f34409a515")
+    //TODO: Replace "API_KEY" part with your actual api key.
+    @GET("/v2/top-headlines?country=de&category=business&apiKey=API_KEY")
     Call<NewsModel> getNews();
 
 }
