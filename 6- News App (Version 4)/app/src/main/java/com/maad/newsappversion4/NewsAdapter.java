@@ -1,15 +1,21 @@
 package com.maad.newsappversion4;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ShareCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -50,13 +56,48 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         else
             holder.imageIV.setImageResource(R.drawable.ic_broken_image);
 
-        holder.card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri articleLink = Uri.parse(articles.get(position).getUrl());
-                Intent intent = new Intent(Intent.ACTION_VIEW, articleLink);
-                activity.startActivity(intent);
-            }
+        holder.card.setOnClickListener(v -> {
+            Uri articleLink = Uri.parse(articles.get(position).getUrl());
+            Intent intent = new Intent(Intent.ACTION_VIEW, articleLink);
+            activity.startActivity(intent);
+        });
+
+        holder.dotsIV.setOnClickListener(v -> {
+            //creating a popup menu
+            PopupMenu popup = new PopupMenu(activity, holder.dotsIV);
+            //inflating menu from xml resource
+            popup.inflate(R.menu.news_item_menu);
+            //adding click listener
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.item_share:
+                        new ShareCompat
+                                .IntentBuilder(activity)
+                                .setType("text/plain")
+                                .setChooserTitle("Share link with: ")
+                                .setText(articles.get(position).getUrl())
+                                .startChooser();
+                        return true;
+
+                    case R.id.item_favorites:
+                        DBHelper helper = new DBHelper(activity);
+                        SQLiteDatabase db = helper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        values.put("title", articles.get(position).getTitle());
+                        values.put("url", articles.get(position).getUrl());
+                        long rowID = db.insert("Favorites", null, values);
+                        if (rowID != -1)
+                            Toast.makeText(activity, "Added to favorites", Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(activity, "Item already exists in favorites"
+                                    , Toast.LENGTH_SHORT).show();
+                        return true;
+                    default:
+                        return false;
+                }
+            });
+            //displaying the popup
+            popup.show();
         });
 
     }
@@ -71,12 +112,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         private TextView titleTV;
         private ImageView imageIV;
         private CardView card;
+        private ImageView dotsIV;
 
         public NewsViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTV = itemView.findViewById(R.id.tv_title);
             imageIV = itemView.findViewById(R.id.iv_image);
             card = itemView.findViewById(R.id.card_view);
+            dotsIV = itemView.findViewById(R.id.iv_dots);
         }
     }
+
 }

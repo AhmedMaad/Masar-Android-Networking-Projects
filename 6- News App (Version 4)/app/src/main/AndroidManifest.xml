@@ -13,6 +13,9 @@
         android:theme="@style/Theme.NewsAppVersion4"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".FavoritesActivity"
+            android:exported="true" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="true" />
         <activity
