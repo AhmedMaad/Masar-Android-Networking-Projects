@@ -63,6 +63,16 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:onClick="sendResetPasswordLink"
+                    android:text="Forgot your password?"
+                    android:textColor="#256EC8"
+                    android:textSize="12sp" />
+
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="match_parent"
                     android:layout_height="80dp"

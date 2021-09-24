@@ -1,10 +1,12 @@
 package com.maad.newsappversion5;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -62,6 +64,38 @@ public class LoginActivity extends AppCompatActivity {
                                     , Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public void sendResetPasswordLink(View view) {
+        LayoutInflater inflater = getLayoutInflater();
+        // Pass null as the parent view because its going in the dialog layout
+        View v = inflater.inflate(R.layout.password_alert_dialog, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder
+                .setView(v)
+                .setPositiveButton("Send", (dialog, which) -> {
+                    EditText emailET = v.findViewById(R.id.et_email);
+                    String emailAddress = emailET.getText().toString();
+                    mAuth.sendPasswordResetEmail(emailAddress)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(LoginActivity.this
+                                                , "Check your email", Toast.LENGTH_SHORT).show();
+                                    } else
+                                        Toast.makeText(LoginActivity.this
+                                                , "No account is registered with this email"
+                                                , Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .show();
     }
 
 }
