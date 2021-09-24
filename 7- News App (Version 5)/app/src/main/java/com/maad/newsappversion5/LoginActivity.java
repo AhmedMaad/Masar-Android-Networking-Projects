@@ -17,6 +17,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+//TODO: Add your own "google-services.json" file under Android app module root directory.
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
