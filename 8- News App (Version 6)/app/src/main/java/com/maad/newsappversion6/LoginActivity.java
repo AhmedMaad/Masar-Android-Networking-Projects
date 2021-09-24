@@ -50,11 +50,13 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (task.isSuccessful() && user.isEmailVerified()) {
-                            //navigate to main activity
+                            //navigate to home activity
+                            Constants.USER_ID = task.getResult().getUser().getUid();
                             Intent i = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(i);
                             finish();
                         } else if (task.isSuccessful() && !user.isEmailVerified()) {
+                            Constants.USER_ID = task.getResult().getUser().getUid();
                             Intent i = new Intent(LoginActivity.this
                                     , EmailVerificationActivity.class);
                             i.putExtra("email", email);

@@ -50,9 +50,10 @@ public class SignupActivity extends AppCompatActivity {
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful())
+                            if (task.isSuccessful()) {
+                                Constants.USER_ID = task.getResult().getUser().getUid();
                                 verifyEmail(email, password);
-                            else
+                            } else
                                 Toast.makeText(SignupActivity.this
                                         , "Error: " + task.getException().getLocalizedMessage()
                                         , Toast.LENGTH_LONG).show();
