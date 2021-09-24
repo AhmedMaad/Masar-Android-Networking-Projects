@@ -13,16 +13,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText email;
-    EditText password;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     public void openSignupActivity(View view) {
@@ -31,17 +32,23 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    //Check if user email is verified
     public void login(View view) {
-        email = findViewById(R.id.email);
-        password = findViewById(R.id.password);
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
+
+        EditText emailET = findViewById(R.id.email);
+        EditText passwordET = findViewById(R.id.password);
+
+        String email = emailET.getText().toString();
+        String password = passwordET.getText().toString();
+
+        mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (task.isSuccessful() && user.isEmailVerified()) {
                             //navigate to main activity
-                            Finals.user = task.getResult().getUser().getUid();
-                            Intent i = new Intent(LoginActivity.this, TabActivity.class);
+                            Intent i = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(i);
                             finish();
                         } else

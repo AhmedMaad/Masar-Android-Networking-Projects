@@ -5,13 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.miniolx.R;
-import com.example.miniolx.data.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -28,11 +25,11 @@ public class EmailVerificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_verification);
+        setTitle("Verify Email");
+        Toast.makeText(this, "Check your Email", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(this, R.string.verify_email, Toast.LENGTH_SHORT).show();
-
-        email = getIntent().getStringExtra("Email");
-        password = getIntent().getStringExtra("Password");
+        email = getIntent().getStringExtra("email");
+        password = getIntent().getStringExtra("password");
         progressBar = findViewById(R.id.pb_verify_email);
     }
 
@@ -49,9 +46,8 @@ public class EmailVerificationActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         FirebaseUser user = task.getResult().getUser();
-                        Log.d("json", "Email found: " + user.getEmail());
                         if (user.isEmailVerified()) {
-                            Util.U_ID = user.getUid();
+                            progressBar.setVisibility(View.GONE);
                             //Go to home page
                             Intent intent = new Intent(EmailVerificationActivity.this
                                     , HomeActivity.class);
@@ -60,7 +56,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
                         } else {
                             progressBar.setVisibility(View.GONE);
                             Toast.makeText(EmailVerificationActivity.this
-                                    , R.string.verify_email, Toast.LENGTH_SHORT).show();
+                                    , "Check your Email", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
