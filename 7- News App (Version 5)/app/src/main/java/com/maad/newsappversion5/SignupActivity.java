@@ -62,20 +62,22 @@ public class SignupActivity extends AppCompatActivity {
 
     private void verifyEmail(String email, String password) {
         FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Intent i = new Intent(SignupActivity.this
-                                    , EmailVerificationActivity.class);
-                            i.putExtra("email", email);
-                            i.putExtra("password", password);
-                            startActivity(i);
-                            finish();
+        if (user != null) {
+            user.sendEmailVerification()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Intent i = new Intent(SignupActivity.this
+                                        , EmailVerificationActivity.class);
+                                i.putExtra("email", email);
+                                i.putExtra("password", password);
+                                startActivity(i);
+                                finish();
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
 }

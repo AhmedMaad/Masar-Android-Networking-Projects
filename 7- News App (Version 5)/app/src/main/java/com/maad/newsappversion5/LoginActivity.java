@@ -32,7 +32,6 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    //Check if user email is verified
     public void login(View view) {
 
         EditText emailET = findViewById(R.id.email);
@@ -51,8 +50,16 @@ public class LoginActivity extends AppCompatActivity {
                             Intent i = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(i);
                             finish();
+                        } else if (task.isSuccessful() && !user.isEmailVerified()) {
+                            Intent i = new Intent(LoginActivity.this
+                                    , EmailVerificationActivity.class);
+                            i.putExtra("email", email);
+                            i.putExtra("password", password);
+                            startActivity(i);
+                            finish();
                         } else
-                            Toast.makeText(LoginActivity.this, "No email or password found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Wrong email or password"
+                                    , Toast.LENGTH_SHORT).show();
                     }
                 });
     }
