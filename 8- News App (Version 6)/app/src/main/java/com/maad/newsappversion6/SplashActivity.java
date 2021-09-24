@@ -54,7 +54,7 @@ public class SplashActivity extends AwesomeSplash {
         configSplash.setRevealFlagY(Flags.REVEAL_TOP);
 
         //Customize Logo
-        configSplash.setLogoSplash(R.mipmap.ic_launcher);
+        configSplash.setLogoSplash(R.drawable.news_icon);
         configSplash.setAnimLogoSplashDuration(3000);
         configSplash.setAnimLogoSplashTechnique(Techniques.Bounce);
 
