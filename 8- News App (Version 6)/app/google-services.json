@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "119627449504",
+    "project_id": "news-app-masar-42c83",
+    "storage_bucket": "news-app-masar-42c83.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119627449504:android:be4a6d70c4efa49ca635c5",
+        "android_client_info": {
+          "package_name": "com.maad.newsappversion6"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "119627449504-3f8ki1qbbp1v466e2iaoo74rk9ub0uie.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtMMtI-R66inmaFZaKyh1E66ZeeyDA938"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "119627449504-3f8ki1qbbp1v466e2iaoo74rk9ub0uie.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
