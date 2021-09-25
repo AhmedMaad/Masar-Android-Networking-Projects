@@ -1,9 +1,7 @@
 package com.maad.newsappversion6;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +15,27 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ShareCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
 
     private Activity activity;
     private ArrayList<Article> articles;
+    private List<FavoritesModel> favorites;
 
-    public NewsAdapter(Activity activity, ArrayList<Article> articles) {
+    public NewsAdapter(Activity activity, ArrayList<Article> articles, List<FavoritesModel> favorites) {
         this.activity = activity;
         this.articles = articles;
+        this.favorites = favorites;
     }
 
     @NonNull
@@ -79,17 +86,35 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
                         return true;
 
                     case R.id.item_favorites:
-                        DBHelper helper = new DBHelper(activity);
-                        SQLiteDatabase db = helper.getWritableDatabase();
-                        ContentValues values = new ContentValues();
-                        values.put("title", articles.get(position).getTitle());
-                        values.put("url", articles.get(position).getUrl());
-                        long rowID = db.insert("Favorites", null, values);
-                        if (rowID != -1)
-                            Toast.makeText(activity, "Added to favorites", Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(activity, "Item already exists in favorites"
-                                    , Toast.LENGTH_SHORT).show();
+                        boolean isArticleExist = false;
+                        String title = articles.get(position).getTitle();
+                        String url = articles.get(position).getUrl();
+                        FavoritesModel model = new FavoritesModel(Constants.USER_ID, title, url);
+
+                        for (FavoritesModel element : favorites) {
+                            if (title.equals(element.getTitle())
+                                    && element.getUserId().equals(Constants.USER_ID)) {
+                                Toast.makeText(activity, "Item exists in favorites"
+                                        , Toast.LENGTH_SHORT).show();
+                                isArticleExist = true;
+                                break;
+                            }
+                        }
+                        if (!isArticleExist)
+                            FirebaseFirestore
+                                    .getInstance()
+                                    .collection("favorites")
+                                    .add(model)
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                                            if (task.isSuccessful()) {
+                                                favorites.add(model);
+                                                Toast.makeText(activity, "Article Added to Favorites"
+                                                        , Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         return true;
                     default:
                         return false;
