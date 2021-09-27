@@ -51,26 +51,25 @@
         android:text="Sign out"
         android:textColor="#266CCA"
         map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintTop_toTopOf="parent" />
+        map:layout_constraintTop_toTopOf="@id/cv" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        map:cardCornerRadius="16dp"
-        map:layout_constraintBottom_toBottomOf="@id/btn_sign_out"
+        map:cardCornerRadius="12dp"
         map:layout_constraintEnd_toStartOf="@id/btn_sign_out"
         map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="@id/btn_sign_out">
+        map:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/location_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="8dp"
+            android:padding="12dp"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             tools:text="Giza, Egypt." />
 
     </androidx.cardview.widget.CardView>

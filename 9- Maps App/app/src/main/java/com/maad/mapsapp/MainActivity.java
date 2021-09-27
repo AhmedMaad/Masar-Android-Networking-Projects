@@ -23,7 +23,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-//TODO: Add your own "google-services.json" file under Android app module root directory.
+//TODO(1): Add your own "google-services.json" file under Android app module root directory.
+//TODO(2): Add your own "google_maps_key" value inside the "google_maps_api.xml" file
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

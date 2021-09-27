@@ -137,13 +137,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            //maxResults: max number of addresses to return. Recommended to be from 1 to 5
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+
             String address = addresses.get(0).getAddressLine(0);
             binding.locationText.setText(address);
+
+
         } catch (IOException e) {
+            /*If an exceptions is caught, you can restart your mobile phone, this might help
+            in solving your bug*/
             Log.d("trace", "Location Error: " + e.getLocalizedMessage());
-            binding.locationText.setText("Unknown Location");
+            binding.locationText.setText("Cannot get location");
         }
 
     }
