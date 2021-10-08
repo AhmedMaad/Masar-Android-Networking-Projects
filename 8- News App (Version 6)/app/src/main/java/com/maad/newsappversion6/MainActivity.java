@@ -2,7 +2,6 @@ package com.maad.newsappversion6;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -29,9 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout refresh;
     private String receivedCat;
-    private List<FavoritesModel> favorites = new ArrayList<>();
-    private ArrayList<Article> articles = new ArrayList<>();
-    private ProgressBar progress;
+    private NewsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +51,11 @@ public class MainActivity extends AppCompatActivity {
                 loadNews();
             }
         });
-
     }
 
-    private void loadNews() {
+    private void loadNews(){
 
-        progress = findViewById(R.id.progress);
+        ProgressBar progress = findViewById(R.id.progress);
 
         Retrofit retrofit = new Retrofit
                 .Builder()
@@ -67,38 +63,38 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        SharedPreferences prefs =
-                getSharedPreferences("settings", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
         String savedCode = prefs.getString("code", "us");
 
         CallableInterface callable = retrofit.create(CallableInterface.class);
         Call<NewsModel> newsModelCall = callable.getNews(receivedCat, savedCode);
+
         newsModelCall.enqueue(new Callback<NewsModel>() {
             @Override
             public void onResponse(Call<NewsModel> call, Response<NewsModel> response) {
+                progress.setVisibility(View.INVISIBLE);
                 refresh.setRefreshing(false);
                 NewsModel news = response.body();
-                articles = news.getArticles();
-                readFavorites();
+                ArrayList<Article> articles = news.getArticles();
+                showNews(articles);
             }
 
             @Override
             public void onFailure(Call<NewsModel> call, Throwable t) {
                 progress.setVisibility(View.INVISIBLE);
-                Log.d("trace", "Error: " + t.getLocalizedMessage());
             }
         });
 
     }
 
-    private void showNews() {
+    private void showNews(ArrayList<Article> articles){
         RecyclerView recyclerView = findViewById(R.id.rv);
-        NewsAdapter adapter = new NewsAdapter(this, articles, favorites);
+        adapter = new NewsAdapter(this, articles);
         recyclerView.setAdapter(adapter);
+        readFavorites();
     }
 
-    private void readFavorites() {
-        progress.setVisibility(View.INVISIBLE);
+    private void readFavorites(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db
                 .collection("favorites")
@@ -106,8 +102,9 @@ public class MainActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        favorites = queryDocumentSnapshots.toObjects(FavoritesModel.class);
-                        showNews();
+                        List<FavoritesModel> favorites =
+                                queryDocumentSnapshots.toObjects(FavoritesModel.class);
+                        adapter.setFavorites(favorites);
                     }
                 });
     }
